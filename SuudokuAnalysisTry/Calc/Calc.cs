@@ -21,10 +21,10 @@ namespace SuudokuAnalysisTry.Calc
             }
 
             // 値を仮で記入
-            var wRemains = Map.Targets.SelectMany(x => Map.GetZeroCellsWithoutNum(x.Num)).Distinct().OrderBy(x => x.RemainNum().Count()).ToList();
-            if(wRemains.Count > 0)
+            var wRemainCells = Map.Targets.SelectMany(x => Map.GetZeroCellsWithoutNum(x.Num)).Distinct().OrderBy(x => x.RemainNum().Count()).ToList();
+            if (wRemainCells.Count > 0)
             {
-                var wCell = wRemains.First();
+                var wCell = wRemainCells.First();
                 var wCopyCells = Map.Cells.DeepClone() as List<Map.Cell>;
                 foreach (var wNum in wCell.RemainNum())
                 {

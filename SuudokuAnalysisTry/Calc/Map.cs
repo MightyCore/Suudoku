@@ -189,5 +189,13 @@ namespace SuudokuAnalysisTry.Calc
         #endregion
 
         public static void ShowMap() => MessageBox.Show(string.Join("\r\n", Enumerable.Range(0, 9).ToList().Select(i => string.Join(",", Cells.Where(x => x.Row == i).OrderBy(x => x.Col).Select(x => x.Num)))));
+        public static bool CheckAns()
+        {
+            Func<IEnumerable<IGrouping<int, Cell>>, bool> wChecker = vList => vList.All(x => x.ToList().Select(y => y.Num).Distinct().Count() == 9);
+            if (!wChecker(Cells.GroupBy(x => x.Row))) return false;
+            if (!wChecker(Cells.GroupBy(x => x.Col))) return false;
+            if (!wChecker(Cells.GroupBy(x => x.Area))) return false;
+            return true;
+        }
     }
 }

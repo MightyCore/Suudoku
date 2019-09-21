@@ -243,7 +243,7 @@ namespace SuudokuAnalysisTry
             {
                 //-----------------------------------------
                 new Calc.Calc().Exe();
-                Enumerable.Range(1, 9).ToList().ForEach(i => SetLineNum(Calc.Map.Cells.Where(x => x.Row == i).Select(x => x.Num.ToString()).ToArray(), i));
+                Enumerable.Range(1, 9).ToList().ForEach(i => SetLineNum(Calc.Map.Cells.Where(x => x.Row == i).Select(x => x.Num.ToString()).ToArray(), i));                
                 //-----------------------------------------
             }
             catch (Exception ex)
@@ -258,6 +258,8 @@ namespace SuudokuAnalysisTry
 
             // 計測停止
             sw.Stop();
+
+            if (!Calc.Map.CheckAns()) MessageBox.Show("ミスってまっせ。");
 
             // 結果表示
             TimeSpan ts = sw.Elapsed;
