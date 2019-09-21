@@ -13,15 +13,15 @@ namespace SuudokuAnalysisTry.Calc
                 // 行、列、エリアの残1セルに番号記入
                 if (Map.Targets.Any(x =>
                 {
-                    var wCells = Map.GetZeroCellsWithoutNum(x.Num);
-                    return wCells.Count(y => y.SetNumWhenTheLastOne(x.Num, wCells)) > 0;
+                    var wCells = Map.GetZeroCellsWithoutNum(x);
+                    return wCells.Count(y => y.SetNumWhenTheLastOne(x, wCells)) > 0;
                     // 記入セルがあれば再開
                 })) continue;
                 break;
             }
 
             // 値を仮で記入
-            var wRemainCells = Map.Targets.SelectMany(x => Map.GetZeroCellsWithoutNum(x.Num)).Distinct().OrderBy(x => x.RemainNum().Count()).ToList();
+            var wRemainCells = Map.Targets.SelectMany(x => Map.GetZeroCellsWithoutNum(x)).Distinct().OrderBy(x => x.RemainNum().Count()).ToList();
             if (wRemainCells.Count > 0)
             {
                 var wCell = wRemainCells.First();

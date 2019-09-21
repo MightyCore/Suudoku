@@ -15,7 +15,6 @@ namespace SuudokuAnalysisTry.Calc
     {
         #region Field
         public static List<Cell> Cells = new List<Cell>();
-        //public static List<Remain> Remains = new List<Remain>();
         public static bool Reset = false;
         #endregion
 
@@ -42,18 +41,6 @@ namespace SuudokuAnalysisTry.Calc
                 Area = (int)(Math.Floor((decimal)(Row - 1) / 3) * 3 + Math.Floor((decimal)((Col - 1) / 3)) + 1);
             }
         }
-
-        /// <summary>
-        /// 各数値のカウント
-        /// </summary>
-        [Serializable]
-
-
-        public class Remain
-        {
-            public int Num { get; set; }
-            public int Cnt { get; set; }
-        }
         #endregion
 
         #region Property
@@ -61,9 +48,12 @@ namespace SuudokuAnalysisTry.Calc
         /// 残りのターゲットを空セルの少ない順に取得
         /// </summary>
         /// <returns></returns>
-        public static List<Remain> Targets => Remains.Where(x => x.Cnt < 9).OrderByDescending(x => x.Cnt).ToList();
-
-        public static List<Remain> Remains => Cells.GroupBy(x => x.Num).ToDictionary(x => x.Key, x => x.ToList()).Select(x => new Remain { Num = x.Key, Cnt = x.Value.Count }).ToList();
+        public static List<int> Targets => Cells.GroupBy(x => x.Num)
+            .ToDictionary(x => x.Key, x => x.ToList())
+            .Select(x => new { x.Key, x.Value.Count })
+            .Where(x => x.Count < 9)
+            .OrderByDescending(x => x.Count)
+            .Select(x => x.Key).ToList();
         #endregion
 
         #region Initialize
@@ -73,7 +63,6 @@ namespace SuudokuAnalysisTry.Calc
         public static void Initialize()
         {
             Enumerable.Range(0, 9 * 9).ToList().ForEach(i => Cells.Add(new Cell(i)));
-            //Enumerable.Range(1, 9).ToList().ForEach(i => Remains.Add(new Remain { Num = i }));
         }
         #endregion
 
@@ -96,21 +85,15 @@ namespace SuudokuAnalysisTry.Calc
         public static void SetNum(this Cell vCell, int vNum)
         {
             bool IsReset = vNum > 0 && vCell.Exists().Any(x => x == vNum);
-            //if (vCell.Num > 0) Remains.Find(x => x.Num == vCell.Num).Cnt--;
             vCell.Num = vNum;
             if (vNum == 0) return;
-            //Remains.Find(x => x.Num == vNum).Cnt++;
             if (IsReset) Reset = true;
         }
 
         /// <summary>
         /// 値の初期化
         /// </summary>
-        public static void ClearNum()
-        {
-            Cells.ForEach(x => x.Num = 0);
-            //Remains.ForEach(x => x.Cnt = 0);
-        }
+        public static void ClearNum() => Cells.ForEach(x => x.Num = 0);
 
         /// <summary>
         /// 指定番号が存在する行、列、表以外の値が0のセル
@@ -170,10 +153,10 @@ namespace SuudokuAnalysisTry.Calc
         /// <returns></returns>
         public static List<int> RemainNum(this Cell vCell)
         {
-            var wRemains = Remains.Select(x => x.Num).ToList();
-            return wRemains.Except(Cells.Where(x => x.Row == vCell.Row).Select(x => x.Num)).ToList()
-                .Concat(wRemains.Except(Cells.Where(x => x.Col == vCell.Col).Select(x => x.Num)).ToList())
-                .Concat(wRemains.Except(Cells.Where(x => x.Area == vCell.Area).Select(x => x.Num)).ToList())
+            var wTargets = Targets;
+            return wTargets.Except(Cells.Where(x => x.Row == vCell.Row).Select(x => x.Num)).ToList()
+                .Concat(wTargets.Except(Cells.Where(x => x.Col == vCell.Col).Select(x => x.Num)).ToList())
+                .Concat(wTargets.Except(Cells.Where(x => x.Area == vCell.Area).Select(x => x.Num)).ToList())
                 .Distinct().ToList();
         }
 
@@ -188,7 +171,16 @@ namespace SuudokuAnalysisTry.Calc
         }
         #endregion
 
+        #region Debug
+        /// <summary>
+        /// 途中経過確認
+        /// </summary>
         public static void ShowMap() => MessageBox.Show(string.Join("\r\n", Enumerable.Range(0, 9).ToList().Select(i => string.Join(",", Cells.Where(x => x.Row == i).OrderBy(x => x.Col).Select(x => x.Num)))));
+
+        /// <summary>
+        /// 答え合わせ
+        /// </summary>
+        /// <returns></returns>
         public static bool CheckAns()
         {
             Func<IEnumerable<IGrouping<int, Cell>>, bool> wChecker = vList => vList.All(x => x.ToList().Select(y => y.Num).Distinct().Count() == 9);
@@ -197,5 +189,6 @@ namespace SuudokuAnalysisTry.Calc
             if (!wChecker(Cells.GroupBy(x => x.Area))) return false;
             return true;
         }
+        #endregion
     }
 }
