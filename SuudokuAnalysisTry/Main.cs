@@ -259,6 +259,7 @@ namespace SuudokuAnalysisTry
             // 計測停止
             sw.Stop();
 
+            // 回答確認
             if (!Calc.Map.CheckAns()) MessageBox.Show("ミスってまっせ。");
 
             // 結果表示

@@ -84,10 +84,10 @@ namespace SuudokuAnalysisTry.Calc
         /// <param name="vNum"></param>
         public static void SetNum(this Cell vCell, int vNum)
         {
-            bool IsReset = vNum > 0 && vCell.Exists().Any(x => x == vNum);
+            var wExists = vCell.Exists();
             vCell.Num = vNum;
             if (vNum == 0) return;
-            if (IsReset) Reset = true;
+            if (wExists.Any(x => x == vNum)) Reset = true;
         }
 
         /// <summary>
@@ -105,9 +105,7 @@ namespace SuudokuAnalysisTry.Calc
             var wWithouts = Cells.Where(x => x.Num == vNum).ToList();
             return Cells.Where(x => wWithouts.All(y => y.Row != x.Row && y.Col != x.Col && y.Area != x.Area && x.Num == 0)).ToList();
         }
-        #endregion
 
-        #region Expand
         /// <summary>
         /// 空きが1セルの個所があった場合、対象数値で埋める
         /// </summary>
@@ -165,10 +163,11 @@ namespace SuudokuAnalysisTry.Calc
         /// </summary>
         /// <param name="vCell"></param>
         /// <returns></returns>
-        public static List<int> Exists(this Cell vCell)
-        {
-            return Cells.Where(x => x.Row == vCell.Row || x.Col == vCell.Col || x.Area == vCell.Area).Select(x => x.Num).Distinct().ToList();
-        }
+        public static List<int> Exists(this Cell vCell) =>
+            Cells
+            .Where(x => x.Row == vCell.Row || x.Col == vCell.Col || x.Area == vCell.Area)
+            .Select(x => x.Num)
+            .Distinct().ToList();
         #endregion
 
         #region Debug

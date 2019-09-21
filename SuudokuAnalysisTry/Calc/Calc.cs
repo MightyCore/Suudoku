@@ -5,8 +5,13 @@ namespace SuudokuAnalysisTry.Calc
 {
     class Calc
     {
+        /// <summary>
+        /// メイン処理
+        /// </summary>
+        /// <returns>True:正常値、False：不整値入力あり</returns>
         public bool Exe()
         {
+            // 誤った値が入力されていた場合、Falseを返す
             if (Map.Reset) return false;
             while (true)
             {
@@ -20,7 +25,7 @@ namespace SuudokuAnalysisTry.Calc
                 break;
             }
 
-            // 値を仮で記入
+            // 0セルを、候補数値の少ない順に取得
             var wRemainCells = Map.Targets.SelectMany(x => Map.GetZeroCellsWithoutNum(x)).Distinct().OrderBy(x => x.RemainNum().Count()).ToList();
             if (wRemainCells.Count > 0)
             {
@@ -36,8 +41,10 @@ namespace SuudokuAnalysisTry.Calc
                 }
             }
 
+            // 誤った入力が無く、全セルが埋まっていない場合に、再起実行
             if (!Map.Reset && Map.Targets.Count > 0) Exe();
 
+            // 誤った値が入力されていた場合、Falseを返す
             return !Map.Reset;
         }
     }
