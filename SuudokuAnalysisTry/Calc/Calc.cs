@@ -31,8 +31,16 @@ namespace SuudokuAnalysisTry.Calc
                 if (wRemainCells.Count > 0)
                 {
                     var wCell = wRemainCells.First();
-                    var wNum = wCell.RemainNum()[wCell.TempCnt];
-                    wCell.SetNumTemp(wNum);
+                    if(wCell.TempCnt < wCell.RemainNum().Count)
+                    {
+                        var wNum = wCell.RemainNum()[wCell.TempCnt];
+                        wCell.SetNumTemp(wNum);
+                    }
+                    else
+                    {
+                        wCell.TempCnt = 0;
+                        Map.ClearNumTemp();
+                    }
                     continue;
                 }
                 #endregion
