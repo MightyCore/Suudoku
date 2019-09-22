@@ -10,11 +10,11 @@ namespace SuudokuAnalysisTry.Calc
     /// <summary>
     /// 表
     /// </summary>
-    [Serializable]
     public static class Map
     {
         #region Field
         public static List<Cell> Cells = new List<Cell>();
+        public static List<List<int>> CellsIndexNumbered = new List<List<int>> { new List<int>() };
         public static bool Reset = false;
         #endregion
 
@@ -22,9 +22,9 @@ namespace SuudokuAnalysisTry.Calc
         /// <summary>
         /// Cell
         /// </summary>
-        [Serializable]
         public partial class Cell
         {
+            public int Index { get; private set; }
             public int Row { get; private set; }
             public int Col { get; private set; }
             public int Area { get; private set; }
@@ -36,6 +36,7 @@ namespace SuudokuAnalysisTry.Calc
             /// <param name="vIndex"></param>
             public Cell(int vIndex)
             {
+                Index = vIndex;
                 Row = (int)(Math.Floor((decimal)(vIndex / 9)) + 1);
                 Col = vIndex - (Row - 1) * 9 + 1;
                 Area = (int)(Math.Floor((decimal)(Row - 1) / 3) * 3 + Math.Floor((decimal)((Col - 1) / 3)) + 1);
@@ -48,7 +49,8 @@ namespace SuudokuAnalysisTry.Calc
         /// 残りのターゲットを空セルの少ない順に取得
         /// </summary>
         /// <returns></returns>
-        public static List<int> Targets => Cells.GroupBy(x => x.Num)
+        public static List<int> Targets => Cells.Where(x => x.Num > 0)
+            .GroupBy(x => x.Num)
             .ToDictionary(x => x.Key, x => x.ToList())
             .Select(x => new { x.Key, x.Value.Count })
             .Where(x => x.Count < 9)
@@ -87,13 +89,46 @@ namespace SuudokuAnalysisTry.Calc
             var wExists = vCell.Exists();
             vCell.Num = vNum;
             if (vNum == 0) return;
+            CellsIndexNumbered[CellsIndexNumbered.Count - 1].Add(vCell.Index);
             if (wExists.Any(x => x == vNum)) Reset = true;
+        }
+
+        /// <summary>
+        /// 値の仮置き
+        /// </summary>
+        /// <param name="vCell"></param>
+        /// <param name="vNum"></param>
+        /// <returns></returns>
+        public static int SetNumTemp(this Cell vCell, int vNum)
+        {
+            CellsIndexNumbered.Add(new List<int> { vCell.Index });
+            vCell.SetNum(vNum);
+            return CellsIndexNumbered.Count - 1;
+        }
+
+
+        /// <summary>
+        /// 仮置きした値の初期化
+        /// </summary>
+        /// <param name="vLevel"></param>
+        public static void ClearNumTemp(int vLevel)
+        {
+            Enumerable.Range(vLevel, CellsIndexNumbered.Count - vLevel).ToList().ForEach(x =>
+            {
+                CellsIndexNumbered[x].ForEach(i => Cells[i].Num = 0);
+            });
+            CellsIndexNumbered.RemoveRange(vLevel, CellsIndexNumbered.Count - vLevel);
         }
 
         /// <summary>
         /// 値の初期化
         /// </summary>
-        public static void ClearNum() => Cells.ForEach(x => x.Num = 0);
+        public static void ClearNum()
+        {
+            Cells.ForEach(x => x.Num = 0);
+            CellsIndexNumbered.Clear();
+            CellsIndexNumbered.Add(new List<int>());
+        }
 
         /// <summary>
         /// 指定番号が存在する行、列、表以外の値が0のセル
@@ -103,7 +138,7 @@ namespace SuudokuAnalysisTry.Calc
         public static List<Cell> GetZeroCellsWithoutNum(int vNum)
         {
             var wWithouts = Cells.Where(x => x.Num == vNum).ToList();
-            return Cells.Where(x => wWithouts.All(y => y.Row != x.Row && y.Col != x.Col && y.Area != x.Area && x.Num == 0)).ToList();
+            return Cells.Where(x => wWithouts.All(y => y.Row != x.Row && y.Col != x.Col && y.Area != x.Area && x.Num == 0))?.ToList() ?? new List<Cell>();
         }
 
         /// <summary>
