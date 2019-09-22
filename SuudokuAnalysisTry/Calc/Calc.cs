@@ -1,12 +1,9 @@
 ﻿using System.Linq;
-using System.Collections.Generic;
 
 namespace SuudokuAnalysisTry.Calc
 {
     class Calc
     {
-        // kokokara level5のstack overflowが倒せない
-
         /// <summary>
         /// メイン処理
         /// </summary>
@@ -39,14 +36,14 @@ namespace SuudokuAnalysisTry.Calc
                 var wCell = wRemainCells.First();
                 foreach (var wNum in wCell.RemainNum())
                 {
-                    var wIndex = wCell.SetNumTemp(wNum);
+                    wCell.SetNumTemp(wNum);
 
                     // 不正値入力が無ければ、正常終了
                     if (Exe()) return true;
                     Map.Reset = false;
 
                     // 仮設定値の初期化
-                    Map.ClearNumTemp(wIndex);
+                    Map.ClearNumTemp();
                 }
             }
             #endregion

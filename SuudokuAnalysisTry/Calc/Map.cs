@@ -13,8 +13,19 @@ namespace SuudokuAnalysisTry.Calc
     public static class Map
     {
         #region Field
+        /// <summary>
+        /// セル一覧
+        /// </summary>
         public static List<Cell> Cells = new List<Cell>();
+        
+        /// <summary>
+        /// 値入力したセル番号を階層別に管理
+        /// </summary>
         public static List<List<int>> CellsIndexNumbered = new List<List<int>> { new List<int>() };
+
+        /// <summary>
+        /// 不正な値を入力した場合にTrue
+        /// </summary>
         public static bool Reset = false;
         #endregion
 
@@ -98,26 +109,20 @@ namespace SuudokuAnalysisTry.Calc
         /// </summary>
         /// <param name="vCell"></param>
         /// <param name="vNum"></param>
-        /// <returns></returns>
-        public static int SetNumTemp(this Cell vCell, int vNum)
+        public static void SetNumTemp(this Cell vCell, int vNum)
         {
             CellsIndexNumbered.Add(new List<int> { vCell.Index });
             vCell.SetNum(vNum);
-            return CellsIndexNumbered.Count - 1;
         }
 
 
         /// <summary>
         /// 仮置きした値の初期化
         /// </summary>
-        /// <param name="vLevel"></param>
-        public static void ClearNumTemp(int vLevel)
+        public static void ClearNumTemp()
         {
-            Enumerable.Range(vLevel, CellsIndexNumbered.Count - vLevel).ToList().ForEach(x =>
-            {
-                CellsIndexNumbered[x].ForEach(i => Cells[i].Num = 0);
-            });
-            CellsIndexNumbered.RemoveRange(vLevel, CellsIndexNumbered.Count - vLevel);
+            CellsIndexNumbered[CellsIndexNumbered.Count - 1].ForEach(i => Cells[i].Num = 0);
+            CellsIndexNumbered.RemoveAt(CellsIndexNumbered.Count - 1);
         }
 
         /// <summary>
