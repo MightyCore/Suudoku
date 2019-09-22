@@ -17,16 +17,16 @@ namespace SuudokuAnalysisTry.Calc
         /// セル一覧
         /// </summary>
         public static List<Cell> Cells = new List<Cell>();
-        
+
         /// <summary>
         /// 値入力したセル番号を階層別に管理
         /// </summary>
-        public static List<List<int>> CellsIndexNumbered = new List<List<int>> { new List<int>() };
+        private static List<List<int>> CellsIndexNumbered = new List<List<int>> { new List<int>() };
 
         /// <summary>
         /// 不正な値を入力した場合にTrue
         /// </summary>
-        public static bool Reset = false;
+        private static bool Reset = false;
         #endregion
 
         #region Class
@@ -40,6 +40,7 @@ namespace SuudokuAnalysisTry.Calc
             public int Col { get; private set; }
             public int Area { get; private set; }
             public int Num { get; set; }
+            public int TempCnt { get; set; }
 
             /// <summary>
             /// コンストラクタ
@@ -60,13 +61,26 @@ namespace SuudokuAnalysisTry.Calc
         /// 残りのターゲットを空セルの少ない順に取得
         /// </summary>
         /// <returns></returns>
-        public static List<int> Targets => Cells.Where(x => x.Num > 0)
-            .GroupBy(x => x.Num)
-            .ToDictionary(x => x.Key, x => x.ToList())
-            .Select(x => new { x.Key, x.Value.Count })
-            .Where(x => x.Count < 9)
-            .OrderByDescending(x => x.Count)
-            .Select(x => x.Key).ToList();
+        public static List<int> Targets
+        {
+            get
+            {
+                if (Reset)
+                {
+                    // 仮設定値の初期化
+                    ClearNumTemp();
+                    Reset = false;
+                }
+
+                return Cells.Where(x => x.Num > 0)
+                    .GroupBy(x => x.Num)
+                    .ToDictionary(x => x.Key, x => x.ToList())
+                    .Select(x => new { x.Key, x.Value.Count })
+                    .Where(x => x.Count < 9)
+                    .OrderByDescending(x => x.Count)
+                    .Select(x => x.Key).ToList();
+            }
+        }
         #endregion
 
         #region Initialize
@@ -112,9 +126,9 @@ namespace SuudokuAnalysisTry.Calc
         public static void SetNumTemp(this Cell vCell, int vNum)
         {
             CellsIndexNumbered.Add(new List<int> { vCell.Index });
+            vCell.TempCnt++;
             vCell.SetNum(vNum);
         }
-
 
         /// <summary>
         /// 仮置きした値の初期化
@@ -130,7 +144,10 @@ namespace SuudokuAnalysisTry.Calc
         /// </summary>
         public static void ClearNum()
         {
-            Cells.ForEach(x => x.Num = 0);
+            Cells.ForEach(x => {
+                x.Num = 0;
+                x.TempCnt = 0;
+            });
             CellsIndexNumbered.Clear();
             CellsIndexNumbered.Add(new List<int>());
         }
@@ -143,7 +160,7 @@ namespace SuudokuAnalysisTry.Calc
         public static List<Cell> GetZeroCellsWithoutNum(int vNum)
         {
             var wWithouts = Cells.Where(x => x.Num == vNum).ToList();
-            return Cells.Where(x => wWithouts.All(y => y.Row != x.Row && y.Col != x.Col && y.Area != x.Area && x.Num == 0))?.ToList() ?? new List<Cell>();
+            return Cells.Where(x => x.Num == 0).Where(x => wWithouts.All(y => y.Row != x.Row && y.Col != x.Col && y.Area != x.Area))?.ToList() ?? new List<Cell>(); ;
         }
 
         /// <summary>
@@ -151,6 +168,7 @@ namespace SuudokuAnalysisTry.Calc
         /// </summary>
         /// <param name="vCell"></param>
         /// <param name="vNum"></param>
+        /// <param name="vCells"></param>
         /// <returns></returns>
         public static bool SetNumWhenTheLastOne(this Cell vCell, int vNum, List<Cell> vCells)
         {
@@ -192,10 +210,11 @@ namespace SuudokuAnalysisTry.Calc
         public static List<int> RemainNum(this Cell vCell)
         {
             var wTargets = Targets;
-            return wTargets.Except(Cells.Where(x => x.Row == vCell.Row).Select(x => x.Num)).ToList()
-                .Concat(wTargets.Except(Cells.Where(x => x.Col == vCell.Col).Select(x => x.Num)).ToList())
-                .Concat(wTargets.Except(Cells.Where(x => x.Area == vCell.Area).Select(x => x.Num)).ToList())
-                .Distinct().ToList();
+            Func<Func<Cell, bool>, List<int>> wExcepts = x => wTargets.Except(Cells.Where(x).Select(y => y.Num)).ToList();
+            return wExcepts(x => x.Row == vCell.Row)
+                .Concat(wExcepts(x => x.Col == vCell.Col))
+                .Concat(wExcepts(x => x.Area == vCell.Area))
+                .Distinct().OrderBy(x => x).ToList();
         }
 
         /// <summary>
@@ -228,6 +247,11 @@ namespace SuudokuAnalysisTry.Calc
             if (!wChecker(Cells.GroupBy(x => x.Area))) return false;
             return true;
         }
+
+        /// <summary>
+        /// 各階層の深さとルート番号
+        /// </summary>
+        private static void LogLevel() => Console.WriteLine($"{CellsIndexNumbered.Count} {CellsIndexNumbered[CellsIndexNumbered.Count - 1][0]}");
         #endregion
     }
 }
