@@ -72,12 +72,10 @@ namespace SuudokuAnalysisTry.Calc
                     Reset = false;
                 }
 
-                return Cells.Where(x => x.Num > 0)
-                    .GroupBy(x => x.Num)
-                    .ToDictionary(x => x.Key, x => x.ToList())
-                    .Select(x => new { x.Key, x.Value.Count })
-                    .Where(x => x.Count < 9)
-                    .OrderByDescending(x => x.Count)
+                return Enumerable.Range(1, 9)
+                    .ToDictionary(x => x, x => Cells.Count(y => y.Num == x))
+                    .Where(x => x.Value < 9)
+                    .OrderByDescending(x => x.Value)
                     .Select(x => x.Key).ToList();
             }
         }
@@ -125,7 +123,8 @@ namespace SuudokuAnalysisTry.Calc
         /// <param name="vNum"></param>
         public static void SetNumTemp(this Cell vCell, int vNum)
         {
-            CellsIndexNumbered.Add(new List<int> { vCell.Index });
+            LogExport();
+            CellsIndexNumbered.Add(new List<int>());
             vCell.TempCnt++;
             vCell.SetNum(vNum);
         }
@@ -144,7 +143,8 @@ namespace SuudokuAnalysisTry.Calc
         /// </summary>
         public static void ClearNum()
         {
-            Cells.ForEach(x => {
+            Cells.ForEach(x =>
+            {
                 x.Num = 0;
                 x.TempCnt = 0;
             });
@@ -207,15 +207,7 @@ namespace SuudokuAnalysisTry.Calc
         /// </summary>
         /// <param name="vCell"></param>
         /// <returns></returns>
-        public static List<int> RemainNum(this Cell vCell)
-        {
-            var wTargets = Targets;
-            Func<Func<Cell, bool>, List<int>> wExcepts = x => wTargets.Except(Cells.Where(x).Select(y => y.Num)).ToList();
-            return wExcepts(x => x.Row == vCell.Row)
-                .Concat(wExcepts(x => x.Col == vCell.Col))
-                .Concat(wExcepts(x => x.Area == vCell.Area))
-                .Distinct().OrderBy(x => x).ToList();
-        }
+        public static List<int> RemainNum(this Cell vCell) => Targets.Except(vCell.Exists()).ToList();
 
         /// <summary>
         /// 紐づく行、列、表に存在する値
@@ -249,9 +241,9 @@ namespace SuudokuAnalysisTry.Calc
         }
 
         /// <summary>
-        /// 各階層の深さとルート番号
+        /// 各階層の深さと値を設定したセル番号
         /// </summary>
-        private static void LogLevel() => Console.WriteLine($"{CellsIndexNumbered.Count} {CellsIndexNumbered[CellsIndexNumbered.Count - 1][0]}");
+        private static void LogExport() => Console.WriteLine($"{CellsIndexNumbered.Count} {string.Join(", ", CellsIndexNumbered[CellsIndexNumbered.Count - 1])}");
         #endregion
     }
 }
