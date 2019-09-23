@@ -33,11 +33,13 @@ namespace SuudokuAnalysisTry.Calc
                     var wCell = wRemainCells.First();
                     if(wCell.TempCnt < wCell.RemainNum().Count)
                     {
+                        // 仮で番号を記入
                         var wNum = wCell.RemainNum()[wCell.TempCnt];
                         wCell.SetNumTemp(wNum);
                     }
                     else
                     {
+                        // 仮番号の初期化
                         wCell.TempCnt = 0;
                         Map.ClearNumTemp();
                     }
@@ -45,7 +47,10 @@ namespace SuudokuAnalysisTry.Calc
                 }
                 #endregion
 
+                // 全ての値の記入が完了したら終了
                 if (Map.Targets.Count == 0) break;
+
+                // 仮番号の初期化
                 Map.ClearNumTemp();
             }
         }
