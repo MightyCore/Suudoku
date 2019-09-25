@@ -241,8 +241,10 @@ namespace SuudokuAnalysisTry
             try
             {
                 //-----------------------------------------
+                AnsNum.Items.Clear();
                 new Calc.Calc().Exe();
-                Enumerable.Range(1, 9).ToList().ForEach(i => SetLineNum(Calc.Map.Cells.Where(x => x.Row == i).Select(x => x.Num.ToString()).ToArray(), i));                
+                Enumerable.Range(1, Calc.Map.Ansers.Count).ToList().ForEach(x => AnsNum.Items.Add(x));
+                AnsNum.SelectedIndex = 0;
                 //-----------------------------------------
             }
             catch (Exception ex)
@@ -409,6 +411,53 @@ namespace SuudokuAnalysisTry
 
         }
 
+        /// <summary>
+        /// 結果の表示
+        /// </summary>
+        /// <param name="vNum"></param>
+        private void SetAns(int vNum)
+        {
+            Enumerable.Range(1, 9).ToList().ForEach(i => SetLineNum(Calc.Map.Ansers[vNum - 1].Where(x => x.Row == i).Select(x => x.Num.ToString()).ToArray(), i));
+        }
 
+        /// <summary>
+        /// 回答番号設定
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AnsNum_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetAns(int.Parse(AnsNum.Text));
+        }
+
+        /// <summary>
+        /// 次の回答
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AnsNext_Click(object sender, EventArgs e)
+        {
+            if (AnsNum.Items.Count == AnsNum.SelectedIndex + 1)
+            {
+                AnsNum.SelectedIndex = 0;
+                return;
+            }
+            AnsNum.SelectedIndex++;
+        }
+
+        /// <summary>
+        /// 前の回答
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AnsBefore_Click(object sender, EventArgs e)
+        {
+            if (AnsNum.SelectedIndex == 0)
+            {
+                AnsNum.SelectedIndex = AnsNum.Items.Count - 1;
+                return;
+            }
+            AnsNum.SelectedIndex--;
+        }
     }
 }

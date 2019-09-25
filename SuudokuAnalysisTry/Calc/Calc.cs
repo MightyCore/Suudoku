@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Collections.Generic;
 
 namespace SuudokuAnalysisTry.Calc
 {
@@ -9,6 +10,8 @@ namespace SuudokuAnalysisTry.Calc
         /// </summary>
         public void Exe()
         {
+            Map.Ansers.Clear();
+
             while (true)
             {
                 #region FirstBlock
@@ -43,12 +46,16 @@ namespace SuudokuAnalysisTry.Calc
                         wCell.TempCnt = 0;
                         Map.ClearNumTemp();
                     }
+                    // 回答が出きったら終了
+                    if (Map.CellsIndexNumbered.Count == 0) break;
+
+                    // FirstBlockの処理を再開
                     continue;
                 }
                 #endregion
 
                 // 全ての値の記入が完了したら終了
-                if (Map.Targets.Count == 0) break;
+                if (Map.Targets.Count == 0) Map.Ansers.Add(Map.Cells.DeepClone() as List<Map.Cell>);
 
                 // 仮番号の初期化
                 Map.ClearNumTemp();

@@ -21,18 +21,24 @@ namespace SuudokuAnalysisTry.Calc
         /// <summary>
         /// 値入力したセル番号を階層別に管理
         /// </summary>
-        private static List<List<int>> CellsIndexNumbered = new List<List<int>> { new List<int>() };
+        public static List<List<int>> CellsIndexNumbered = new List<List<int>> { new List<int>() };
 
         /// <summary>
         /// 不正な値を入力した場合にTrue
         /// </summary>
         private static bool Reset = false;
+
+        /// <summary>
+        /// 回答格納
+        /// </summary>
+        public static List<List<Cell>> Ansers = new List<List<Cell>>();
         #endregion
 
         #region Class
         /// <summary>
         /// Cell
         /// </summary>
+        [Serializable]
         public partial class Cell
         {
             public int Index { get; private set; }
@@ -123,6 +129,7 @@ namespace SuudokuAnalysisTry.Calc
         /// <param name="vNum"></param>
         public static void SetNumTemp(this Cell vCell, int vNum)
         {
+            if (CellsIndexNumbered.Count == 0) return;
             LogExport();
             CellsIndexNumbered.Add(new List<int>());
             vCell.TempCnt++;
@@ -234,10 +241,13 @@ namespace SuudokuAnalysisTry.Calc
         public static bool CheckAns()
         {
             Func<IEnumerable<IGrouping<int, Cell>>, bool> wChecker = vList => vList.All(x => x.ToList().Select(y => y.Num).Distinct().Count() == 9);
-            if (!wChecker(Cells.GroupBy(x => x.Row))) return false;
-            if (!wChecker(Cells.GroupBy(x => x.Col))) return false;
-            if (!wChecker(Cells.GroupBy(x => x.Area))) return false;
-            return true;
+            return Ansers.All(x =>
+            {
+                if (!wChecker(x.GroupBy(y => y.Row))) return false;
+                if (!wChecker(x.GroupBy(y => y.Col))) return false;
+                if (!wChecker(x.GroupBy(y => y.Area))) return false;
+                return true;
+            });
         }
 
         /// <summary>

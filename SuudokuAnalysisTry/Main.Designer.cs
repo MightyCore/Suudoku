@@ -119,6 +119,9 @@
             this.panel9 = new System.Windows.Forms.Panel();
             this.panel10 = new System.Windows.Forms.Panel();
             this.btn_End = new System.Windows.Forms.Button();
+            this.AnsNext = new System.Windows.Forms.Button();
+            this.AnsBefore = new System.Windows.Forms.Button();
+            this.AnsNum = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -1151,11 +1154,43 @@
             this.btn_End.UseVisualStyleBackColor = true;
             this.btn_End.Click += new System.EventHandler(this.btn_End_Click);
             // 
+            // AnsNext
+            // 
+            this.AnsNext.Location = new System.Drawing.Point(629, 222);
+            this.AnsNext.Name = "AnsNext";
+            this.AnsNext.Size = new System.Drawing.Size(20, 20);
+            this.AnsNext.TabIndex = 7;
+            this.AnsNext.Text = "+";
+            this.AnsNext.UseVisualStyleBackColor = true;
+            this.AnsNext.Click += new System.EventHandler(this.AnsNext_Click);
+            // 
+            // AnsBefore
+            // 
+            this.AnsBefore.Location = new System.Drawing.Point(506, 223);
+            this.AnsBefore.Name = "AnsBefore";
+            this.AnsBefore.Size = new System.Drawing.Size(20, 20);
+            this.AnsBefore.TabIndex = 8;
+            this.AnsBefore.Text = "-";
+            this.AnsBefore.UseVisualStyleBackColor = true;
+            this.AnsBefore.Click += new System.EventHandler(this.AnsBefore_Click);
+            // 
+            // AnsNum
+            // 
+            this.AnsNum.FormattingEnabled = true;
+            this.AnsNum.Location = new System.Drawing.Point(531, 223);
+            this.AnsNum.Name = "AnsNum";
+            this.AnsNum.Size = new System.Drawing.Size(93, 20);
+            this.AnsNum.TabIndex = 9;
+            this.AnsNum.SelectedIndexChanged += new System.EventHandler(this.AnsNum_SelectedIndexChanged);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(661, 432);
+            this.Controls.Add(this.AnsNum);
+            this.Controls.Add(this.AnsBefore);
+            this.Controls.Add(this.AnsNext);
             this.Controls.Add(this.btn_End);
             this.Controls.Add(this.panel10);
             this.Controls.Add(this.panel7);
@@ -1293,6 +1328,9 @@
         private System.Windows.Forms.TextBox txtNum76;
         private System.Windows.Forms.TextBox txtNum73;
         private System.Windows.Forms.Button btn_End;
+        private System.Windows.Forms.Button AnsNext;
+        private System.Windows.Forms.Button AnsBefore;
+        private System.Windows.Forms.ComboBox AnsNum;
     }
 }
 
