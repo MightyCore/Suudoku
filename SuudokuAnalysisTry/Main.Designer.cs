@@ -122,6 +122,8 @@
             this.AnsNext = new System.Windows.Forms.Button();
             this.AnsBefore = new System.Windows.Forms.Button();
             this.AnsNum = new System.Windows.Forms.ComboBox();
+            this.AnsLimit = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -1179,15 +1181,37 @@
             this.AnsNum.FormattingEnabled = true;
             this.AnsNum.Location = new System.Drawing.Point(531, 223);
             this.AnsNum.Name = "AnsNum";
+            this.AnsNum.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.AnsNum.Size = new System.Drawing.Size(93, 20);
             this.AnsNum.TabIndex = 9;
             this.AnsNum.SelectedIndexChanged += new System.EventHandler(this.AnsNum_SelectedIndexChanged);
+            // 
+            // AnsLimit
+            // 
+            this.AnsLimit.Location = new System.Drawing.Point(506, 286);
+            this.AnsLimit.Name = "AnsLimit";
+            this.AnsLimit.Size = new System.Drawing.Size(143, 19);
+            this.AnsLimit.TabIndex = 10;
+            this.AnsLimit.Text = "1";
+            this.AnsLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.AnsLimit.TextChanged += new System.EventHandler(this.AnsLimit_TextChanged);
+            this.AnsLimit.Enter += new System.EventHandler(this.AnsLimit_Enter);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(504, 268);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(65, 12);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "回答数上限";
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(661, 432);
+            this.Controls.Add(this.AnsLimit);
             this.Controls.Add(this.AnsNum);
             this.Controls.Add(this.AnsBefore);
             this.Controls.Add(this.AnsNext);
@@ -1201,6 +1225,7 @@
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btn_Clear);
             this.Controls.Add(this.btn_Read);
@@ -1331,6 +1356,8 @@
         private System.Windows.Forms.Button AnsNext;
         private System.Windows.Forms.Button AnsBefore;
         private System.Windows.Forms.ComboBox AnsNum;
+        private System.Windows.Forms.TextBox AnsLimit;
+        private System.Windows.Forms.Label label2;
     }
 }
 

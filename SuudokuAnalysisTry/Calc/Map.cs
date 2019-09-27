@@ -95,9 +95,7 @@ namespace SuudokuAnalysisTry.Calc
         {
             Enumerable.Range(0, 9 * 9).ToList().ForEach(i => Cells.Add(new Cell(i)));
         }
-        #endregion
 
-        #region Func
         /// <summary>
         /// 値の格納
         /// </summary>
@@ -108,6 +106,22 @@ namespace SuudokuAnalysisTry.Calc
             Cells.Where(x => x.Row == vRow).ToList().ForEach(x => x.SetNum(int.Parse(vNumArray[x.Col - 1])));
         }
 
+        /// <summary>
+        /// 値の初期化
+        /// </summary>
+        public static void ClearNum()
+        {
+            Cells.ForEach(x =>
+            {
+                x.Num = 0;
+                x.TempCnt = 0;
+            });
+            CellsIndexNumbered.Clear();
+            CellsIndexNumbered.Add(new List<int>());
+        }
+        #endregion
+
+        #region Func
         /// <summary>
         /// 値の設定
         /// </summary>
@@ -146,20 +160,6 @@ namespace SuudokuAnalysisTry.Calc
         }
 
         /// <summary>
-        /// 値の初期化
-        /// </summary>
-        public static void ClearNum()
-        {
-            Cells.ForEach(x =>
-            {
-                x.Num = 0;
-                x.TempCnt = 0;
-            });
-            CellsIndexNumbered.Clear();
-            CellsIndexNumbered.Add(new List<int>());
-        }
-
-        /// <summary>
         /// 指定番号が存在する行、列、表以外の値が0のセル
         /// </summary>
         /// <param name="vNum"></param>
@@ -179,7 +179,9 @@ namespace SuudokuAnalysisTry.Calc
         /// <returns></returns>
         public static bool SetNumWhenTheLastOne(this Cell vCell, int vNum, List<Cell> vCells)
         {
-            if (vCells.Count(x => x.Row == vCell.Row) == 1 || vCells.Count(x => x.Col == vCell.Col) == 1 || vCells.Count(x => x.Area == vCell.Area) == 1)
+            if (vCells.Count(x => x.Row == vCell.Row) == 1
+             || vCells.Count(x => x.Col == vCell.Col) == 1
+             || vCells.Count(x => x.Area == vCell.Area) == 1)
             {
                 vCell.SetNum(vNum);
                 return true;

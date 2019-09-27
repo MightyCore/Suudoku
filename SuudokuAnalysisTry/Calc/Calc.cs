@@ -8,11 +8,11 @@ namespace SuudokuAnalysisTry.Calc
         /// <summary>
         /// メイン処理
         /// </summary>
-        public void Exe()
+        public void Exe(long vAnsLimit)
         {
             Map.Ansers.Clear();
 
-            while (true)
+            while (Map.Ansers.Count < vAnsLimit)
             {
                 #region FirstBlock
                 while (true)
@@ -46,6 +46,7 @@ namespace SuudokuAnalysisTry.Calc
                         wCell.TempCnt = 0;
                         Map.ClearNumTemp();
                     }
+
                     // 回答が出きったら終了
                     if (Map.CellsIndexNumbered.Count == 0) break;
 
@@ -54,12 +55,19 @@ namespace SuudokuAnalysisTry.Calc
                 }
                 #endregion
 
-                // 全ての値の記入が完了したら終了
+                // 回答が出きったら終了
+                if (Map.CellsIndexNumbered.Count == 0) break;
+
+                // 全ての値の記入が完了したら回答群に追加
                 if (Map.Targets.Count == 0) Map.Ansers.Add(Map.Cells.DeepClone() as List<Map.Cell>);
 
-                // 仮番号の初期化
+                // 仮番号を1階層初期化
                 Map.ClearNumTemp();
             }
+
+            // 後処理
+            Map.CellsIndexNumbered.Clear();
+            Map.CellsIndexNumbered.Add(new List<int>());
         }
     }
 }

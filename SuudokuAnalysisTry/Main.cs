@@ -10,6 +10,7 @@ namespace SuudokuAnalysisTry
     {
 
         string filePath = "";
+        string F_AnsLimit = "";
 
         public Main()
         {
@@ -242,7 +243,7 @@ namespace SuudokuAnalysisTry
             {
                 //-----------------------------------------
                 AnsNum.Items.Clear();
-                new Calc.Calc().Exe();
+                new Calc.Calc().Exe(long.Parse(AnsLimit.Text));
                 Enumerable.Range(1, Calc.Map.Ansers.Count).ToList().ForEach(x => AnsNum.Items.Add(x));
                 AnsNum.SelectedIndex = 0;
                 //-----------------------------------------
@@ -417,7 +418,8 @@ namespace SuudokuAnalysisTry
         /// <param name="vNum"></param>
         private void SetAns(int vNum)
         {
-            Enumerable.Range(1, 9).ToList().ForEach(i => SetLineNum(Calc.Map.Ansers[vNum - 1].Where(x => x.Row == i).Select(x => x.Num.ToString()).ToArray(), i));
+            Calc.Map.Cells = Calc.Map.Ansers[vNum - 1];
+            Enumerable.Range(1, 9).ToList().ForEach(i => SetLineNum(Calc.Map.Cells.Where(x => x.Row == i).Select(x => x.Num.ToString()).ToArray(), i));
         }
 
         /// <summary>
@@ -458,6 +460,31 @@ namespace SuudokuAnalysisTry
                 return;
             }
             AnsNum.SelectedIndex--;
+        }
+
+        /// <summary>
+        /// 回答上限入力
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AnsLimit_TextChanged(object sender, EventArgs e)
+        {
+            var wValue = AnsLimit.Text;
+            if(!long.TryParse(wValue, out long wLongValue)
+            || wLongValue < 1)
+            {
+                AnsLimit.Text = F_AnsLimit;
+            }
+        }
+
+        /// <summary>
+        /// 回答上限入力前の値を取得
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AnsLimit_Enter(object sender, EventArgs e)
+        {
+            F_AnsLimit = AnsLimit.Text;
         }
     }
 }
