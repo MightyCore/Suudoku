@@ -124,6 +124,8 @@
             this.AnsNum = new System.Windows.Forms.ComboBox();
             this.AnsLimit = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.AnsLimitMinus = new System.Windows.Forms.Button();
+            this.AnsLimitPuls = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -1188,9 +1190,9 @@
             // 
             // AnsLimit
             // 
-            this.AnsLimit.Location = new System.Drawing.Point(506, 286);
+            this.AnsLimit.Location = new System.Drawing.Point(531, 286);
             this.AnsLimit.Name = "AnsLimit";
-            this.AnsLimit.Size = new System.Drawing.Size(143, 19);
+            this.AnsLimit.Size = new System.Drawing.Size(93, 19);
             this.AnsLimit.TabIndex = 10;
             this.AnsLimit.Text = "1";
             this.AnsLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -1206,6 +1208,26 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "回答数上限";
             // 
+            // AnsLimitMinus
+            // 
+            this.AnsLimitMinus.Location = new System.Drawing.Point(506, 286);
+            this.AnsLimitMinus.Name = "AnsLimitMinus";
+            this.AnsLimitMinus.Size = new System.Drawing.Size(20, 20);
+            this.AnsLimitMinus.TabIndex = 8;
+            this.AnsLimitMinus.Text = "-";
+            this.AnsLimitMinus.UseVisualStyleBackColor = true;
+            this.AnsLimitMinus.Click += new System.EventHandler(this.AnsLimitMinus_Click);
+            // 
+            // AnsLimitPuls
+            // 
+            this.AnsLimitPuls.Location = new System.Drawing.Point(629, 286);
+            this.AnsLimitPuls.Name = "AnsLimitPuls";
+            this.AnsLimitPuls.Size = new System.Drawing.Size(20, 20);
+            this.AnsLimitPuls.TabIndex = 7;
+            this.AnsLimitPuls.Text = "+";
+            this.AnsLimitPuls.UseVisualStyleBackColor = true;
+            this.AnsLimitPuls.Click += new System.EventHandler(this.AnsLimitPuls_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1213,7 +1235,9 @@
             this.ClientSize = new System.Drawing.Size(661, 432);
             this.Controls.Add(this.AnsLimit);
             this.Controls.Add(this.AnsNum);
+            this.Controls.Add(this.AnsLimitMinus);
             this.Controls.Add(this.AnsBefore);
+            this.Controls.Add(this.AnsLimitPuls);
             this.Controls.Add(this.AnsNext);
             this.Controls.Add(this.btn_End);
             this.Controls.Add(this.panel10);
@@ -1358,6 +1382,8 @@
         private System.Windows.Forms.ComboBox AnsNum;
         private System.Windows.Forms.TextBox AnsLimit;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button AnsLimitMinus;
+        private System.Windows.Forms.Button AnsLimitPuls;
     }
 }
 

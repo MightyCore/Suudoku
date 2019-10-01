@@ -486,5 +486,26 @@ namespace SuudokuAnalysisTry
         {
             F_AnsLimit = AnsLimit.Text;
         }
+
+        /// <summary>
+        /// 回答上限のデクリメント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AnsLimitMinus_Click(object sender, EventArgs e)
+        {
+            if (long.Parse(AnsLimit.Text) == 1) return;
+            AnsLimit.Text = (long.Parse(AnsLimit.Text) - 1).ToString();
+        }
+
+        /// <summary>
+        /// 回答上限のインクリメント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AnsLimitPuls_Click(object sender, EventArgs e)
+        {
+            AnsLimit.Text = (long.Parse(AnsLimit.Text) + 1).ToString();
+        }
     }
 }
