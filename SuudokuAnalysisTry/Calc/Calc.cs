@@ -8,6 +8,7 @@ namespace SuudokuAnalysisTry.Calc
         /// <summary>
         /// メイン処理
         /// </summary>
+        /// <param name="vAnsLimit"></param>
         public void Exe(long vAnsLimit)
         {
             Map.Ansers.Clear();
